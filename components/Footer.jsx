@@ -15,17 +15,28 @@ const Footer = () => {
             </div>
             <div className="flex flex-col justify-center gap-4">
                 <div className="flex flex-row items-center gap-4"><GiGps className="text-2xl"/><p>Lorem ipsum dolor amet street</p></div>
+<<<<<<< HEAD
                 <div className="flex flex-row items-center gap-4"><MdEmail className="text-2xl cursor-pointer"/><p>hanskristtian.t@gmail.com</p></div>
+=======
+                <div className="flex flex-row items-center gap-4"><Link href="mailto:hanskristtian.t@gmail.com"><MdEmail className="text-2xl cursor-pointer hover:opacity-90"/></Link><p>hanskristtian.t@gmail.com</p></div>
+>>>>>>> 064ffc4 (Creating User Interface)
                 
             </div>
         </div>
         <div className="h-[1px] w-[80%] bg-white my-[1%]"></div>
         <div className="flex flex-row justify-between items-center w-[80%]">
             <div className="flex flex-row justify-evenly items-center w-[40%]">
+<<<<<<< HEAD
             <Link href="/">Home</Link>
             <Link href="/">Suggestion</Link>
             <Link href="/">Support</Link>
             <Link href="/">About</Link>
+=======
+            <Link href="/" className="hover:opacity-85">Home</Link>
+            <Link href="/" className="hover:opacity-85">Suggestion</Link>
+            <Link href="/" className="hover:opacity-85">Support</Link>
+            <Link href="/" className="hover:opacity-85">About</Link>
+>>>>>>> 064ffc4 (Creating User Interface)
             </div>
             <p>©Copyright 2025. All Rights Reserved</p>
         </div>

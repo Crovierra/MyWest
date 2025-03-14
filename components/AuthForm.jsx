@@ -8,13 +8,25 @@ const AuthForm = ({title}) => {
             (
                 <div>
             <form className='flex flex-col items-center gap-5 '>
+<<<<<<< HEAD
                 <CustomInput 
+=======
+                <CustomInput
+                forLabel="phone"
+                idLabel="phone" 
+>>>>>>> 064ffc4 (Creating User Interface)
                 type="tel"
                 placeholder="Insert your phone number"
                 name="phone"
                 label="Phone Number"
                 />
+<<<<<<< HEAD
                 <CustomInput 
+=======
+                <CustomInput
+                forLabel="password"
+                idLabel="password" 
+>>>>>>> 064ffc4 (Creating User Interface)
                 type="password"
                 placeholder="Insert your password"
                 name="password"
@@ -27,19 +39,37 @@ const AuthForm = ({title}) => {
             ) : (   
                 <div>
                 <form className='flex flex-col items-center gap-5 '>
+<<<<<<< HEAD
                 <CustomInput 
+=======
+                <CustomInput
+                forLabel="name"
+                idLabel="name" 
+>>>>>>> 064ffc4 (Creating User Interface)
                 type="text"
                 placeholder="What is your name ?"
                 name="name"
                 label="Full Name"
                 />
+<<<<<<< HEAD
                 <CustomInput 
+=======
+                <CustomInput
+                forLabel="phone"
+                idLabel="phone" 
+>>>>>>> 064ffc4 (Creating User Interface)
                 type="tel"
                 placeholder="Insert your phone number"
                 name="phone"
                 label="Phone Number"
                 />
+<<<<<<< HEAD
                 <CustomInput 
+=======
+                <CustomInput
+                forLabel="password"
+                idLabel="password" 
+>>>>>>> 064ffc4 (Creating User Interface)
                 type="password"
                 placeholder="Insert your password"
                 name="password"
