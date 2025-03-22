@@ -14,7 +14,7 @@ import {
 const Fund = () => {
     const [isIncome, setIsIncome] = useState(true)
     function handleChange(value){
-        setIsIncome(value === "income")
+        setIsIncome(value === "Income")
     }
 
   return (
@@ -22,7 +22,7 @@ const Fund = () => {
         <form className='flex flex-col' action="/transactions" method="POST">
         <p className='text-xl font-semibold'>Fast Input</p>
         <CustomInput forLabel="amount" idLabel="amount" label="Amount ($)" name="amount" type="text" placeholder="ex : 250"/>
-        <label for="options">Type</label>
+        <label htmlFor="options">Status</label>
         <Select onValueChange={handleChange} required>
             <SelectTrigger className="w-[full]">
                 <SelectValue placeholder="Income / Expense" />
@@ -32,7 +32,7 @@ const Fund = () => {
                 <SelectItem value="Expense" >Expense</SelectItem>
             </SelectContent>
         </Select>
-        <label for="options2">Category</label>
+        <label htmlFor="options2">Category</label>
         <Select>
             <SelectTrigger className="w-[full]]">
                 <SelectValue placeholder={isIncome ? "Salary, Bonus, etc" : "Food, Entertaiment, etc"} />
@@ -54,7 +54,7 @@ const Fund = () => {
             )}
             
         </Select>
-        <button className='bg-black text-white px-4 py-1.5 rounded-lg mt-4'>
+        <button className='bg-black text-white px-4 py-1.5 rounded-lg mt-4 cursor-pointer'>
             Add
         </button>
         </form>

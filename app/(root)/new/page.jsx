@@ -8,13 +8,21 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-  import { useState } from "react"
+  import { useState, useEffect } from "react"
+  import { useUser } from '@/lib/action/user-context'
 
 const page = () => {
+    const { user } = useUser();
+    const [ loading, setLoading ] = useState(false)
+    useEffect(()=>{
+        if(!user){
+            alert("Please login first to see real data from Transaction Table")
+        }
+    }, [user])
     const [isIncome, setIsIncome] = useState(true)
         function handleChange(key,value){
             if(key === "status"){
-                setIsIncome(value === "income")
+                setIsIncome(value === "Income")
             }
             setTransaction((prevData) => ({
                 ...prevData, [key]:value
@@ -27,34 +35,54 @@ const page = () => {
         }
 
     const [transaction, setTransaction] = useState({
-        user: "",
-        userId: "",
+        user: user?.name || "",
+        userId: user?.user_id || "",
         amount: 0,
         status: "",
         category: "",
         description: ""
     })
 
-    function submitForm(e){
+    async function submitForm(e){
         e.preventDefault()
-
-        fetch("/api/transactions",{
-            method: "POST",
-            headers: {"content-type" :"application/json"},
-            body: JSON.stringify(data)
-        })
-        .then(res => res.json())
-        .then(data => console.log("Success :", data))
-        .catch(err => console.log("Error Submiting Form :", err))
-
-        setData({
-            user: "",
-            userId: "",
-            amount: 0,
-            type: "",
-            category: "",
-            description: ""
-        })
+        const newTransaction = {
+            userId: user?.user_id || "",
+            date: new Date().toISOString().split("T")[0], // Add current date
+            status: transaction.status,
+            category: transaction.category,
+            description: transaction.description,
+            amount: transaction.amount
+        }
+        try {
+            console.log("User from submit :", user)
+            setLoading(true)
+            const response = await fetch(`/api/transactions/${newTransaction.id}`,{
+                method: "POST",
+                headers: {"Content-Type" :"application/json"},
+                body: JSON.stringify(newTransaction)
+            })
+            console.log("The transaction: ",newTransaction)
+            
+            const data = await response.json();
+    
+            setTransaction({
+                user: user?.name || "",
+                userId: user?.user_id || "",
+                amount: 0,
+                status: "",
+                category: "",
+                description: ""
+            })
+            if(response.ok){
+                alert("Sucess")
+            }
+        } catch (error) {
+            console.log("There is an error when submiting form :", error)
+        } finally {
+            setLoading(false)
+        }
+        
+        
     }
 
 
@@ -64,7 +92,7 @@ const page = () => {
             <form className='flex flex-col' action="/transactions" method="POST" onSubmit={submitForm}>
             <p className='text-xl font-semibold'>Fast Input</p>
             <CustomInput forLabel="amount" idLabel="amount" label="Amount ($)" name="amount" type="number" placeholder="ex : 250" onChange={handleInput}/>
-            <label htmlFor="options">Type</label>
+            <label htmlFor="options">Status</label>
             <Select onValueChange={(value) => handleChange("status", value)} required>
                 <SelectTrigger className="w-[full]">
                     <SelectValue placeholder="Income / Expense" />
@@ -97,16 +125,16 @@ const page = () => {
                 
             </Select>
             <CustomInput label="Description" forLabel="description" idLabel="description" type="text" name="description" placeholder="What is this for ?" onChange={handleInput}/>
-            <button className='bg-black text-white px-4 py-1.5 rounded-lg mt-4' >
-                Add
+            <button className='bg-black text-white px-4 py-1.5 rounded-lg mt-4 cursor-pointer' disabled={loading}>
+                {loading ? "Loading . . " : "Add"}
             </button>
             </form>
         </div>
         <div className='w-[40%] outline-1 shadow-md rounded-xl p-4 flex-col flex gap-4 h-[350px]'>
             <h2 className='text-end text-xl font-bold mb-2'>Review</h2>
             <div className='flex flex-row justify-between'>
-            <p className='font-semibold'>Type</p>
-            <p>{transaction.type ? transaction.type : "-"}</p>
+            <p className='font-semibold'>Status</p>
+            <p>{transaction.status ? transaction.status : "-"}</p>
             </div>
             <div className='flex flex-row justify-between'>
             <p className='font-semibold'>Category</p>
