@@ -3,6 +3,7 @@ import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { UserProvider } from "@/lib/action/user-context";
+import { TransactionProvider } from "@/lib/action/transaction-context";
 
 
 const geistSans = Geist({
@@ -28,7 +29,9 @@ export default function RootLayout({ children }) {
       >
         <UserProvider>
         <Nav />
+        <TransactionProvider>
         <main className="min-h-screen">{children}</main>
+        </TransactionProvider>
         <Footer />
         </UserProvider>
       </body>

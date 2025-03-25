@@ -1,31 +1,87 @@
+"use client"
+
 import { SlGraph } from "react-icons/sl";
+import { useUser } from "@/lib/action/user-context";
+import { useState, useEffect } from "react"
+import { useTransaction } from "@/lib/action/transaction-context"
 
 const StatusCard = ({status, cash, percentage}) => {
-    const incomeBg = "bg-blue-400 flex flex-row w-[300px] h-[140px] shadow-md  rounded-xl py-2 px-5"
-    const expenseBg = "bg-red-400 flex flex-row w-[300px] h-[140px] shadow-md  rounded-xl py-2 px-5"
-    const balance = "bg-green-400 flex flex-row w-[300px] h-[140px] shadow-md  rounded-xl py-2 px-5"
+  const { user } = useUser();
+  const [isClient, setClient] = useState(false)
+  const [ transactions, setTransactions] = useState({
+    income: 0,
+    expense: 0,
+    balance: 0
+  })
+  const { income, expense, balance} = useTransaction()
 
-    const incomeTxt = "bg-white px-2 text-blue-500 rounded-xl font-bold"
-    const expenseTxt ="bg-white px-2 text-red-500 rounded-xl font-bold"
-    const balanceTxt = "bg-white px-2 text-green-500 rounded-xl font-bold"
+  useEffect(()=>{
+    setClient(true)
+  }, [])
+    
+    useEffect(()=>{
+        setTransactions({
+          income: income,
+          expense: expense,
+          balance: balance
+        })
+    }, [income, expense, balance])
 
-    const blue ="text-4xl text-blue-800"
-    const green ="text-4xl text-green-800"
-    const red ="text-4xl text-red-800"
-
+   if(!isClient) return null;
     
   return (
-    <div className={status === "Income" ? incomeBg : status === "Expense" ? expenseBg : balance}>
+    <>
+      {status === "Income" ? (
+        <div className="bg-green-400 flex flex-row w-[300px] h-[140px] shadow-md  rounded-xl py-2 px-5 max-sm:px-4 max-sm:w-[100%]">
         <div className="flex flex-col w-[70%] items-start justify-center">
-        <p className=''><span className={status === "Income" ? incomeTxt : status === "Expense" ? expenseTxt : balanceTxt}>{percentage}</span></p>
-        <p className='font-semibold text-xl mt-[5%]'>Total {status}</p>
-        <p className="font-semibold">{cash}</p>
+        <p className=''><span className="bg-white px-2 text-green-500 rounded-xl font-bold">{percentage}</span></p>
+        <p className='font-semibold text-xl mt-[5%] max-sm:text-center'>Total Income</p>
+        <p className="font-semibold max-sm:text-center">{user ? transactions.income : cash}</p>
         </div>
         <div className="w-[30%] justify-center mt-[10%] flex">
-            <SlGraph className={status === "Income" ? blue : status === "Expense" ? red : green}/>
+                <SlGraph className="text-4xl text-green-800 max-sm:hidden"/>
+            </div>      
         </div>
-    </div>
+      ): status === "Expense" ? (
+        <div className="bg-red-400 flex flex-row w-[300px] h-[140px] shadow-md  rounded-xl py-2 px-5 max-sm:px-4 max-sm:w-[100%]">
+        <div className="flex flex-col w-[70%] items-start justify-center">
+        <p className=''><span className="bg-white px-2 text-red-500 rounded-xl font-bold">{percentage}</span></p>
+        <p className='font-semibold text-xl mt-[5%] max-sm:text-center'>Total Expense</p>
+        <p className="font-semibold max-sm:text-center">{user ? transactions.expense : cash}</p>
+        </div>
+        <div className="w-[30%] justify-center mt-[10%] flex">
+                <SlGraph className="text-4xl text-red-800 max-sm:hidden"/>
+            </div>      
+        </div>
+      ) : (
+        <div className="bg-blue-400 flex flex-row w-[300px] h-[140px] shadow-md  rounded-xl py-2 px-5 max-sm:px-4 max-sm:w-[100%]">
+        <div className="flex flex-col w-[70%] items-start justify-center max-sm:items-center">
+        <p className=''><span className="bg-white px-2 text-blue-500 rounded-xl font-bold">{percentage}</span></p>
+        <p className='font-semibold text-xl mt-[5%] max-sm:text-center'>Total Balance</p>
+        <p className="font-semibold">{user ? transactions.balance : cash}</p>
+        </div>
+        <div className="w-[30%] justify-center mt-[10%] flex">
+                <SlGraph className="text-4xl text-blue-800 max-sm:hidden"/>
+            </div>      
+        </div>
+      )}
+    </>
   )
 }
 
 export default StatusCard
+
+export const IncomeCard = () =>{
+  return(
+    <div className={incomeBg}>
+        <div className="flex flex-col w-[70%] items-start justify-center">
+        <p className=''><span className={incomeTxt}>{transactions.length > 0 ? "1" : percentage}</span></p>
+        <p className='font-semibold text-xl mt-[5%]'>Total </p>
+        <p className="font-semibold">{transactions.length > 0 ? 1000 : cash}</p>
+        </div>
+        <div className="w-[30%] justify-center mt-[10%] flex">
+            <SlGraph className={green}/>
+        </div>      
+    </div>
+)
+}

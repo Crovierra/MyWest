@@ -23,10 +23,9 @@ import {
   } from "@/components/ui/select"
 
  
-  const PopUp = ({data, fn, submitEdit, deleteTransactionById, deleteTemp}) => {
+  const PopUp = ({data, fn, submitEdit, deleteTransactionById, deleteTemp, setDeleteId}) => {
     const { user } = useUser()
     const [ loading, setLoading ] = useState(false)
-    const [ deleteId, setDeleteId] = useState(null)
     const [ oldTransaction, setOldTransaction ] = useState({
         userId: data.userId,
         id: data.id,
@@ -37,7 +36,7 @@ import {
         amount: data.amount
     })
     const [ tempTransaction, setTempTransaction ] = useState({
-        userId: data.userId || 0,
+        userId: data.userId,
         id: data.id,
         date: data.date,
         status: data.status,
@@ -54,33 +53,15 @@ import {
     }
     function handleTempChange(e){
         const { name, value } = e.target
-        setTempTransaction(prevValue => {
+        setOldTransaction(prevValue => {
             return {...prevValue, [name]:value}
         })
     }
 
-    function handleChangedValue(value){
-        if(!user){
-            if(value === "Income" || "Expense"){
-                setTempTransaction(prevValue => {
-                    return {...prevValue, status: value}
-                })
-            } else {
-                setTempTransaction(prevValue => {
-                    return {...prevValue, category: value}
-                })
-            }
-        } else {
-            if(value === "Income" || "Expense"){
-                setOldTransaction(prevValue => {
-                    return {...prevValue, status: value}
-                })
-            } else {
-                setOldTransaction(prevValue => {
-                    return {...prevValue, category: value}
-                })
-            }
-        }
+    function handleChanged(key, value){
+        setOldTransaction(prevValue => {
+            return {...prevValue, [key]:value}
+        })
     }
 
     function deleteTemporary(){
@@ -120,7 +101,7 @@ import {
         try {
             setLoading(true)
             console.log("Fake submit for temporary data")
-            submitEdit(tempTransaction)
+            submitEdit(oldTransaction)
             alert("Success")
         } catch (error) {
             console.log("Can't submit without Sign In First!", error)
@@ -192,7 +173,7 @@ import {
             <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
             <label htmlFor="status" className="text-right">Status</label>
-            <Select onValueChange={handleChangedValue} required>
+            <Select onValueChange={(value) => handleChanged("status", value)} required>
             <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Income / Expense" />
             </SelectTrigger>
@@ -204,7 +185,7 @@ import {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
             <label htmlFor="category" className="text-right">Category</label>
-            <Select>
+            <Select onValueChange={(value) => handleChanged("category", value)}>
             <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder={oldTransaction.status === "Income" ? "Salary, Bonus, etc" : "Food, Entertaiment, etc"} />
             </SelectTrigger>

@@ -12,7 +12,7 @@ const Nav = () => {
    useEffect(()=> {
         const getToken = sessionStorage.getItem("token")
         setToken(getToken)
-   }, [])
+   }, [user, token])
    
 
   return (

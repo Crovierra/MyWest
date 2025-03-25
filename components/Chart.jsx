@@ -63,7 +63,7 @@ const Chart = () => {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-square max-h-[250px] w-full"
         >
           <PieChart>
             <ChartTooltip
@@ -74,16 +74,17 @@ const Chart = () => {
               data={chartData}
               dataKey="amount"
               nameKey="browser"
-              innerRadius={60}
+              innerRadius="50%"
+              outerRadius="80%"
             />
           </PieChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          Expense chart based on Category <TrendingUp className="h-4 w-4" />
+          Expense chart based on Category <TrendingUp className="h-4 w-4 max-lg:hidden" />
         </div>
-        <div className="leading-none text-muted-foreground text-center">
+        <div className="leading-none text-muted-foreground text-center max-lg:text-start">
           Showing total expense for each category
         </div>
       </CardFooter>

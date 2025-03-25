@@ -12,11 +12,14 @@ import {
   import {useState, useEffect} from "react"
   import { useUser } from "@/lib/action/user-context"
   import PopUp from "@/components/PopUp"
+  import { useTransaction } from "@/lib/action/transaction-context"
 
 const TransactionTable = () => {
 
   const { user } = useUser();
+  const {getTotalIncome, getTotalExpense, getTotalBalance} = useTransaction();
   const [ transactions, setTransactions] = useState([])
+  const [ isClient, setClient] = useState(false)
 
   const income = "bg-green-500 rounded-2xl pb-0.5 px-4 text-white"
   const expense = "bg-red-500 rounded-2xl pb-0.5 px-4 text-white"
@@ -94,11 +97,19 @@ const TransactionTable = () => {
   },])
   
   function deleteById(id){
+    if(user){
+      setTransactions(prevValue =>{
+        return prevValue.filter(item => {
+          return item.id !== id
+        })
+      })
+    } else {
       setTemporaryData(prevValue => {
         return prevValue.filter(item => {
           return item.id !== id
         })
       })
+    }
   }
 
   function editTransaction(data){
@@ -112,11 +123,19 @@ const TransactionTable = () => {
       })
     }
   }
+
+  useEffect(()=>{
+    setClient(true)
+  }, [])
   
   useEffect(()=> {
     const token = sessionStorage.getItem("token")
+    if(!token){
+      return;
+    }
     const fetchData = async () => {
       try {
+      
       const response = await fetch("/api/transactions", {
         method: "GET",
         headers: {
@@ -132,16 +151,24 @@ const TransactionTable = () => {
       const data = await response.json()
       
       setTransactions(data)
+      const filterIncome = data.filter(item => item.status === "Income").reduce((sum, item) => sum += Number(item.amount), 0)
+      getTotalIncome(filterIncome)
+      const filterExpense = data.filter(item => item.status === "Expense").reduce((sum, item) => sum += Number(item.amount), 0)
+      getTotalExpense(filterExpense)
+      const totalBalance = filterIncome - filterExpense
+      getTotalBalance(totalBalance)
+      
     } catch (error) {
       console.log("Error fetching transactions from database :", error)
     }
     }
    
-    fetchData();
+    if (user) fetchData();
   }, [user])
     
   
-
+  if(!isClient) return null;
+  
   return (
     <div>
         <Table>
@@ -165,11 +192,11 @@ const TransactionTable = () => {
                    <TableCell>{user ? item.date.split("T")[0] : item.date}</TableCell>
                     <TableCell><span className={item.status === "Income" ? income : expense}>{item.status}</span></TableCell>
                    <TableCell>{item.category}</TableCell>
-                   <TableCell>{item.description}</TableCell>
+                   <TableCell >{item.description}</TableCell>
                     <TableCell className="text-right">$ {item.amount}</TableCell>
                     <TableCell className="flex flex-row">
                     <PopUp data={item} fn="edit" submitEdit={editTransaction}/>
-                    <PopUp data={item} fn="delete" deleteTempTransaction={deleteById}/>
+                    <PopUp data={item} fn="delete" deleteTempTransaction={deleteById} setDeleteId={deleteById}/>
                     </TableCell>
                     </TableRow>
               ))}

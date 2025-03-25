@@ -36,7 +36,7 @@ const page = () => {
 
     const [transaction, setTransaction] = useState({
         user: user?.name || "",
-        userId: user?.user_id || "",
+        userId: user?.userId || "",
         amount: 0,
         status: "",
         category: "",
@@ -46,7 +46,7 @@ const page = () => {
     async function submitForm(e){
         e.preventDefault()
         const newTransaction = {
-            userId: user?.user_id || "",
+            userId: user?.userId || "",
             date: new Date().toISOString().split("T")[0], // Add current date
             status: transaction.status,
             category: transaction.category,
@@ -54,7 +54,7 @@ const page = () => {
             amount: transaction.amount
         }
         try {
-            console.log("User from submit :", user)
+            
             setLoading(true)
             const response = await fetch(`/api/transactions/${newTransaction.id}`,{
                 method: "POST",
@@ -67,7 +67,7 @@ const page = () => {
     
             setTransaction({
                 user: user?.name || "",
-                userId: user?.user_id || "",
+                userId: user?.userId || "",
                 amount: 0,
                 status: "",
                 category: "",
