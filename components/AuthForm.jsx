@@ -14,6 +14,7 @@ const AuthForm = ({title}) => {
         name: ""
     })
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
 
     useEffect(() => {
         console.log("Loading status:", loading);
@@ -30,6 +31,7 @@ const AuthForm = ({title}) => {
                 headers: {"content-type" : "application/json"},
                 body: JSON.stringify(newUser)
             })
+
             let data;
             try{
                 data = await response.json() // Isinya user + accessToken, check Backend
@@ -38,17 +40,19 @@ const AuthForm = ({title}) => {
                 console.log("Data :", err)
             }
 
-            
             if (title === "sign-in"){
                 signIn(data.user)
             } else {
                 console.log("Failed to sign-in")
             }
-
+            console.log("User :", data.user)
+            if(!response.ok){
+                throw new Error(data.message)
+            }
+            
+            
             if (response.ok){
                 sessionStorage.setItem("token",data.accessToken)
-                
-            
                 alert("Success")
                 router.push(title === "sign-in" ? "/" : "/sign-in")
             } else {
@@ -57,7 +61,7 @@ const AuthForm = ({title}) => {
             }
             // If success then ?? Save data globally (?)
         } catch (error) {
-            console.log(error)
+            setError(error.message)
         }finally {
             setLoading(false)
         }
@@ -96,9 +100,10 @@ const AuthForm = ({title}) => {
                 onChange={handleChange}
                 value={newUser.password}
                 />
-                <button disabled={loading} type="submit" className="btn bg-green-500 rounded-2xl w-[45%] py-0.5 text-white cursor-pointer" >{loading ? "Loading..." : "Get Started"}</button>
+                <button disabled={loading} type="submit" className="btn bg-green-500 rounded-2xl w-[45%] py-0.5 text-white cursor-pointer hover:shadow-md" >{loading ? "Loading..." : "Get Started"}</button>
                 </form>
                 <p className="mt-3">Don't have an account ? <span className="text-green-500 cursor-pointer"><a href="/sign-up">Sign Up</a></span></p>
+                <p className="text-center text-red-500">{error ? error : null}</p>
                 </div>
             ) : (   
                 <div>
@@ -133,9 +138,10 @@ const AuthForm = ({title}) => {
                 onChange={handleChange}
                 value={newUser.password}
                 />
-                <button disabled={loading} type="submit" className="btn bg-green-500 rounded-2xl w-[75%] py-0.5 text-white cursor-pointer">{loading ? "Loading..."  : "Start Tracking Now"}</button>
+                <button disabled={loading} type="submit" className="btn bg-green-500 rounded-2xl w-[75%] py-0.5 text-white cursor-pointer hover:shadow-md">{loading ? "Loading..."  : "Start Tracking Now"}</button>
                 </form>
                 <p className="mt-3">Already have an account ? <span className="text-green-500 cursor-pointer"><a href="/sign-in">Sign In</a></span></p>
+                <p className="text-center text-red-600">{error ? error : null}</p>
                 </div>
             )
         }

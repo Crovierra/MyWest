@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 export async function POST(req){
     try {      
         const transaction = await req.json()
-        
         const { userId, date, status, category, description, amount } = transaction
         if(!userId || !date || !status || !category || !amount){
             return NextResponse.json({message:"All fields are required"}, {status: 404})

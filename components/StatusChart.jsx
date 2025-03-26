@@ -22,8 +22,8 @@ import { useTransaction } from "@/lib/action/transaction-context"
 const StatusChart = () => {
   const {income, expense} = useTransaction()
   const chartData = [
-    { browser: "income", amount: income, fill: "var(--color-income)" },
-    { browser: "expense", amount: expense, fill: "var(--color-expense)" },
+    { browser: "income", amount: income ? income : 3680, fill: "var(--color-income)" },
+    { browser: "expense", amount: expense ? expense : 2225, fill: "var(--color-expense)" },
   ]
   
   const chartConfig = {
@@ -40,7 +40,7 @@ const StatusChart = () => {
     },
   }
   return (
-    <div>
+    <div className="rounded-xl shadow-md">
         <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Report</CardTitle>

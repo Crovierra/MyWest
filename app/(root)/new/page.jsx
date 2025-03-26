@@ -10,15 +10,18 @@ import {
   } from "@/components/ui/select"
   import { useState, useEffect } from "react"
   import { useUser } from '@/lib/action/user-context'
+import { useRouter } from 'next/navigation'
+
 
 const page = () => {
     const { user } = useUser();
+    const router = useRouter();
     const [ loading, setLoading ] = useState(false)
     useEffect(()=>{
         if(!user){
-            alert("Please login first to see real data from Transaction Table")
+            router.push("/")
         }
-    }, [user])
+    }, [])
     const [isIncome, setIsIncome] = useState(true)
         function handleChange(key,value){
             if(key === "status"){
@@ -46,13 +49,14 @@ const page = () => {
     async function submitForm(e){
         e.preventDefault()
         const newTransaction = {
-            userId: user?.userId || "",
+            userId: user?.userId,
             date: new Date().toISOString().split("T")[0], // Add current date
             status: transaction.status,
             category: transaction.category,
             description: transaction.description,
             amount: transaction.amount
         }
+        
         try {
             
             setLoading(true)
@@ -65,14 +69,12 @@ const page = () => {
             
             const data = await response.json();
     
-            setTransaction({
-                user: user?.name || "",
-                userId: user?.userId || "",
+            setTransaction((prev) => ({
+                ...prev,
+                userId:user.userId,
                 amount: 0,
-                status: "",
-                category: "",
                 description: ""
-            })
+            }))
             if(response.ok){
                 alert("Sucess")
             }
@@ -90,7 +92,7 @@ const page = () => {
     <div className='flex flex-row w-full px-[30%] h-full mt-[5%] justify-between items-center'>
         <div className='w-[40%] outline-1 shadow-md rounded-xl p-4'>
             <form className='flex flex-col' action="/transactions" method="POST" onSubmit={submitForm}>
-            <p className='text-xl font-semibold'>Fast Input</p>
+            <p className='text-xl font-semibold'>Add New</p>
             <CustomInput forLabel="amount" idLabel="amount" label="Amount ($)" name="amount" type="number" placeholder="ex : 250" onChange={handleInput}/>
             <label htmlFor="options">Status</label>
             <Select onValueChange={(value) => handleChange("status", value)} required>

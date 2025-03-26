@@ -11,11 +11,11 @@ import React from 'react'
 const Home = () => {
   return (
     <>
-    <div className='px-[20%] max-lg:px-[5%] my-[1%] max-sm:my-[2%]'>
+    <div className='px-[20%] max-lg:px-[5%] my-[1%] max-sm:my-[2%] max-xl:px-[10%]'>
       <h2 className='text-xl font-semibold'>Dashboard</h2>
       <Profile />
     </div>
-    <div className='flex flex-row w-full px-[20%] max-lg:px-[5%] gap-4 max-md:flex-col'>
+    <div className='flex flex-row w-full px-[20%] max-lg:px-[5%] gap-4 max-md:flex-col max-xl:px-[10%]'>
       <div className='flex flex-col w-[75%] mb-4 max-md:w-[100%]'>
         <div className='flex flex-row gap-5 '>
       <StatusCard status="Income" cash="$ 3680" percentage="15%"/>
@@ -23,12 +23,12 @@ const Home = () => {
       <StatusCard status="Balance" cash="$ 1455" percentage="10%"/>
         </div>
       <Analysis />
-      <div className='outline-1 rounded-xl my-2 p-4 h-[550px]'>
-        <TransactionTable /> 
+      <div className='outline-1 rounded-xl my-2 p-4 h-full shadow-lg'>
+        <TransactionTable scrollClass="h-[400px] w-full"/> 
       </div>
     </div>
     <div className='flex-col flex w-[25%] my-2 gap-4 max-md:hidden'>
-        <div className='outline-1 h-[25%] rounded-xl'>
+        <div className='outline-1 h-[25%] rounded-xl max-xl:h-[30%] shadow-md'>
           <Fund />
         </div>
         <div className='flex flex-col h-[75%] rounded-xl gap-4'>

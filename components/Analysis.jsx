@@ -1,8 +1,8 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
+
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   Card,
   CardContent,
@@ -17,33 +17,49 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { useTransaction } from "@/lib/action/transaction-context"
 
 const Analysis = () => {
+  const { income, expense } = useTransaction()
+  const [transaction, setTransaction] = useState({
+    income: 0,
+    expense: 0
+  })
+
+  const currentYear = new Date().getFullYear()
+  
+  useEffect(()=>{
+    setTransaction({
+      income: income,
+      expense: expense
+    })
+  }, [income, expense])
   const chartData = [
-    { month: "January", income: 186, expense: 80 },
-    { month: "February", income: 305, expense: 200 },
-    { month: "March", income: 237, expense: 120 },
-    { month: "April", income: 73, expense: 190 },
-    { month: "May", income: 209, expense: 130 },
-    { month: "June", income: 214, expense: 140 },
+    { month: "January", income: income ? 0 : 186, expense: expense ? 0 : 80 },
+    { month: "February", income: income ? 0 : 305, expense: expense ? 0 : 200 },
+    { month: "March", income: transaction.income || 237, expense: transaction.expense || 120 },
+    { month: "April", income: income ? 0 : 73, expense: expense ? 0 : 190 },
+    { month: "May", income: income ? 0 : 209, expense: expense ? 0 : 130 },
+    { month: "June", income: income ? 0 : 214, expense: expense ? 0 : 140 },
   ]
+  
   
   const chartConfig = {
     income: {
       label: "Income",
-      color: "var(--chart-1)",
+      color: "var(--chart-2)",
     },
     expense: {
       label: "Expense",
-      color: "var(--chart-2)",
+      color: "var(--chart-1)",
     },
   }
   return (
-    <div className="my-2">
+    <div className="my-2 shadow-lg rounded-xl">
       <Card>
         <CardHeader>
           <CardTitle>Analysis</CardTitle>
-          <CardDescription>January - June 2024</CardDescription>
+          <CardDescription>January - June {currentYear}</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig}>

@@ -44,7 +44,7 @@ const Fund = () => {
         e.preventDefault()
         const token = sessionStorage.getItem("token")
         if(!token){
-            Alert("To use this feature, you have to sign in")
+            alert("To use this feature, you have to sign in")
             return;
         }
         try {
@@ -70,7 +70,13 @@ const Fund = () => {
                 return;
             }
             alert("Success")
-            const data = await response.json()
+            
+            setTransaction((prev) =>({
+                ...prev,
+                amount: 0,
+                status: "",
+                category: "",
+            }))
 
         } catch (error) {
             console.log("Error sending request to database")
@@ -117,7 +123,7 @@ const Fund = () => {
             )}
             
         </Select>
-        <button disabled={isLoading} className='bg-black text-white px-4 py-1.5 rounded-lg mt-4 cursor-pointer'>
+        <button disabled={isLoading} className='bg-black text-white px-4 py-1.5 rounded-lg mt-4 cursor-pointer hover:opacity-80 shadow-md'>
             {isLoading ? "Loading . ." : "Add"}
         </button>
         </form>

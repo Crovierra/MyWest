@@ -14,8 +14,8 @@ const Footer = () => {
                 <p className="font-normal text-md">Never lose sight again</p>
             </div>
             <div className="flex flex-col justify-center gap-1 max-md:gap-1 max-md:mt-4">
-                <div className="flex flex-row items-center gap-4"><GiGps className="text-2xl"/><p>Lorem ipsum dolor amet street</p></div>
-                <div className="flex flex-row items-center gap-4"><Link href="mailto:hanskristtian.t@gmail.com"><MdEmail className="text-2xl cursor-pointer hover:opacity-90"/></Link><p>hanskristtian.t@gmail.com</p></div>
+                <div className="flex flex-row items-center gap-4"><GiGps className="text-2xl"/><a href="https://github.com/Crovierra/MyWest">https://github.com/Crovierra/MyWest</a></div>
+                <div className="flex flex-row items-center gap-4"><Link href="mailto:hanskristtian.t@gmail.com"><MdEmail className="text-2xl cursor-pointer hover:opacity-90"/></Link><a href="mailto:hanskristtian.t@gmail.com">hanskristtian.t@gmail.com</a></div>
                 
             </div>
         </div>

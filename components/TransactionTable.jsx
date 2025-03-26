@@ -13,13 +13,17 @@ import {
   import { useUser } from "@/lib/action/user-context"
   import PopUp from "@/components/PopUp"
   import { useTransaction } from "@/lib/action/transaction-context"
+  import { ScrollArea } from "@/components/ui/scroll-area"
+import Pagination from "./Pagination"
 
-const TransactionTable = () => {
+const TransactionTable = ({scrollClass}) => {
 
   const { user } = useUser();
-  const {getTotalIncome, getTotalExpense, getTotalBalance} = useTransaction();
+  const {getTotalIncome, getTotalExpense, getTotalBalance, getCategoryExpense} = useTransaction();
   const [ transactions, setTransactions] = useState([])
   const [ isClient, setClient] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [transactionPerPage, setTransactionPerPage] = useState(7)
 
   const income = "bg-green-500 rounded-2xl pb-0.5 px-4 text-white"
   const expense = "bg-red-500 rounded-2xl pb-0.5 px-4 text-white"
@@ -96,6 +100,10 @@ const TransactionTable = () => {
     amount: 800
   },])
   
+  const lastIndex = currentPage * transactionPerPage
+  const firstIndex = lastIndex - transactionPerPage
+  const currentTransaction = transactions.slice(firstIndex, lastIndex)
+
   function deleteById(id){
     if(user){
       setTransactions(prevValue =>{
@@ -124,9 +132,7 @@ const TransactionTable = () => {
     }
   }
 
-  useEffect(()=>{
-    setClient(true)
-  }, [])
+  
   
   useEffect(()=> {
     const token = sessionStorage.getItem("token")
@@ -158,6 +164,19 @@ const TransactionTable = () => {
       const totalBalance = filterIncome - filterExpense
       getTotalBalance(totalBalance)
       
+      const rent = data.filter(item => item.category === "Rent").reduce((sum, item) => sum += Number(item.amount),0)
+      const entertaiment = data.filter(item => item.category === "Entertaiment").reduce((sum, item) => sum += Number(item.amount),0)
+      const clothes = data.filter(item => item.category === "Clothes").reduce((sum, item) => sum += Number(item.amount),0)
+      const food = data.filter(item => item.category === "Food").reduce((sum, item) => sum += Number(item.amount),0)
+      const study = data.filter(item => item.category === "Study").reduce((sum, item) => sum += Number(item.amount),0)
+      getCategoryExpense({
+        rent: rent,
+        entertaiment: entertaiment,
+        clothes: clothes,
+        food: food,
+        study: study
+      })
+      
     } catch (error) {
       console.log("Error fetching transactions from database :", error)
     }
@@ -166,13 +185,16 @@ const TransactionTable = () => {
     if (user) fetchData();
   }, [user])
     
-  
+  useEffect(()=>{
+    setClient(true)
+    
+  }, [])
   if(!isClient) return null;
   
   return (
+    <>
     <div>
         <Table>
-            <TableCaption className="mt-[5%]">A list of your recent invoices.</TableCaption>
             <TableHeader>
              <TableRow>
                 <TableHead className="w-[100px]">Invoice</TableHead>
@@ -186,10 +208,10 @@ const TransactionTable = () => {
             </TableHeader>
              <TableBody>
               {/* Map Data */}
-              {(user ? transactions : temporaryData).map(item => (
+              {(user ? currentTransaction || [] : temporaryData).map(item => (
                     <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.id || item.invoice}</TableCell>
-                   <TableCell>{user ? item.date.split("T")[0] : item.date}</TableCell>
+                   <TableCell>{user ? item.date?.split("T")[0] : item.date}</TableCell>
                     <TableCell><span className={item.status === "Income" ? income : expense}>{item.status}</span></TableCell>
                    <TableCell>{item.category}</TableCell>
                    <TableCell >{item.description}</TableCell>
@@ -202,7 +224,11 @@ const TransactionTable = () => {
               ))}
             </TableBody>
         </Table>
+            <div className="relative flex w-full justify-center bottom-0 mt-[1%]">
+              <Pagination setCurrentPage={setCurrentPage} transactionPerPage={transactionPerPage} totalTransaction={transactions.length}/>
+            </div>
     </div>
+    </>
   )
 }
 
