@@ -6,9 +6,11 @@ import Link from 'next/link'
 import { useUser } from '@/lib/action/user-context'
 import { useState, useEffect } from "react"
 
-const Nav = () => {
+const Nav = ({setOpen}) => {
    const { user, signOut } = useUser()
    const [ token, setToken ] = useState(null)
+   const { openSidebar } = useUser();
+   
    useEffect(()=> {
         const getToken = sessionStorage.getItem("token")
         setToken(getToken)
@@ -64,7 +66,7 @@ const Nav = () => {
                 
             </div>
             <div className="md:hidden justify-center items-center flex max-sm:mr-[5%]">
-            <button className="text-gray-800 text-2xl">☰</button>
+            <button className="text-gray-800 text-2xl cursor-pointer" onClick={openSidebar}>☰</button>
             </div>
         </div>
     </nav>

@@ -4,6 +4,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { UserProvider } from "@/lib/action/user-context";
 import { TransactionProvider } from "@/lib/action/transaction-context";
+import Sidebar from "@/components/Sidebar";
 
 
 const geistSans = Geist({
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
       >
         <UserProvider>
         <Nav />
+        <Sidebar />
         <TransactionProvider>
         <main className="min-h-screen">{children}</main>
         </TransactionProvider>
